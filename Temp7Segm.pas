@@ -10,11 +10,13 @@ rgba(250, 107, 63, 0.38)
 program s7;
 
 uses
-  crt,raylib;
+  raylib;
 
 const
-  pixel = 20;
-  cont = 40;
+  alto = 200;
+  ancho = 400;
+  segV = ancho*0.06;
+  segH = alto*0.026;
   nums: array[0..9] of integer =
   (126,6,109,121,51,91,95,112,127,123);
   cx: array [0..1] of integer = (340,660);
@@ -43,225 +45,60 @@ type
   cronos =array[0..5] of integer;
   Aseg = array[0..5,0..6] of TRectangle;
 
-procedure init_s(var s:Aseg); // Esto es un desastre!!!
 
+procedure init_s(var s2:Aseg);
+var
+  j,i:integer;
+  s:TRectangle;
+  ax,ay:real;
 begin
-// Init A
-  s[0,0].x:=60;
-  s[0,0].y:=pixel*cont div 2 - 140;
-  s[0,0].width:=80;
-  s[0,0].height:=20;
-  // [0]It B
-  s[0,1].x:= 140;
-  s[0,1].y:=440 -160;
-  s[0,1].width:=20;
-  s[0,1].height:=100;
-  // [0]Init C
-  s[0,2].x:= 140;
-  s[0,2].y:=560 - 160;
-  s[0,2].width:=20;
-  s[0,2].height:=100;
-// [0]It D        
-  s[0,3].x:=60;
-  s[0,3].y:=660 - 160;
-  s[0,3].width:=80;
-  s[0,3].height:=20;
-  //I[0]n E
-  s[0,4].x:= 40;
-  s[0,4].y:=560 -160;
-  s[0,4].width:=20;
-  s[0,4].height:=100;
-  //I[0]n F
-  s[0,5].x:= 40;
-  s[0,5].y:=440 -160;
-  s[0,5].width:=20;
-  s[0,5].height:=100;
-// [0]It G
-  s[0,6].x:=60;
-  s[0,6].y:=540 - 160;
-  s[0,6].width:=80;
-  s[0,6].height:=20;
-// Init A
-  s[1,0].x:=60 + 160;
-  s[1,0].y:=pixel*cont div 2 - 140;
-  s[1,0].width:=80;
-  s[1,0].height:=20;
-// [1]t D        
-  s[1,3].x:=60 + 160;
-  s[1,3].y:=660 - 160;
-  s[1,3].width:=80;
-  s[1,3].height:=20;
-// [1]t G
-  s[1,6].x:=60 + 160;
-  s[1,6].y:=540 - 160;
-  s[1,6].width:=80;
-  s[1,6].height:=20;
-// [1]t B
-  s[1,1].x:= 140 + 160;
-  s[1,1].y:=440 -160;
-  s[1,1].width:=20;
-  s[1,1].height:=100;
-// [1]nit C
-  
-  s[1,2].x:= 140 + 160;
-  s[1,2].y:=560 - 160;
-  s[1,2].width:=20;
-  s[1,2].height:=100;
-//I[1] E
-  s[1,4].x:= 40 +160;
-  s[1,4].y:=560 -160;
-  s[1,4].width:=20;
-  s[1,4].height:=100;
-//I[1] F
-  s[1,5].x:= 40 +160;
-  s[1,5].y:=440 -160;
-  s[1,5].width:=20;
-  s[1,5].height:=100;
-// It A
-  s[2,0].x:=60 + 320;
-  s[2,0].y:=pixel*cont div 2 - 140;
-  s[2,0].width:=80;
-  s[2,0].height:=20;
-// [2]t D        
-  s[2,3].x:=60 + 320;
-  s[2,3].y:=660 - 160;
-  s[2,3].width:=80;
-  s[2,3].height:=20;
-// [2]t G
-  s[2,6].x:=60 + 320;
-  s[2,6].y:=540 - 160;
-  s[2,6].width:=80;
-  s[2,6].height:=20;
-// [2]t B
-  s[2,1].x:= 140 + 320;
-  s[2,1].y:=440 -160;
-  s[2,1].width:=20;
-  s[2,1].height:=100;
-// [2]t C
-  
-  s[2,2].x:= 140 + 320;
-  s[2,2].y:=560 - 160;
-  s[2,2].width:=20;
-  s[2,2].height:=100;
-//I[2] E
-  s[2,4].x:= 40 + 320;
-  s[2,4].y:=560 -160;
-  s[2,4].width:=20;
-  s[2,4].height:=100;
-//I[2] F
-  s[2,5].x:= 40 + 320;
-  s[2,5].y:=440 -160;
-  s[2,5].width:=20;
-  s[2,5].height:=100;
-
-// It A
-  s[3,0].x:=60 + 480;
-  s[3,0].y:=pixel*cont div 2 - 140;
-  s[3,0].width:=80;
-  s[3,0].height:=20;
-// [3]t D        
-  s[3,3].x:=60 + 480;
-  s[3,3].y:=660 - 160;
-  s[3,3].width:=80;
-  s[3,3].height:=20;
-// [3]t G
-  s[3,6].x:=60 + 480;
-  s[3,6].y:=540 - 160;
-  s[3,6].width:=80;
-  s[3,6].height:=20;
-// [3]t B
-  s[3,1].x:= 140 + 480;
-  s[3,1].y:=440 -160;
-  s[3,1].width:=20;
-  s[3,1].height:=100;
-// [3]t C
-  
-  s[3,2].x:= 140 + 480;
-  s[3,2].y:=560 - 160;
-  s[3,2].width:=20;
-  s[3,2].height:=100;
-//I[3] E
-  s[3,4].x:= 40 + 480;
-  s[3,4].y:=560 -160;
-  s[3,4].width:=20;
-  s[3,4].height:=100;
-//I[3] F
-  s[3,5].x:= 40 + 480;
-  s[3,5].y:=440 -160;
-  s[3,5].width:=20;
-  s[3,5].height:=100;
-// It A
-  s[4,0].x:=60 + 640;
-  s[4,0].y:=pixel*cont div 2 - 140;
-  s[4,0].width:=80;
-  s[4,0].height:=20;
-// [4]t D        
-  s[4,3].x:=60 + 640;
-  s[4,3].y:=660 - 160;
-  s[4,3].width:=80;
-  s[4,3].height:=20;
-// [4]t G
-  s[4,6].x:=60 + 640;
-  s[4,6].y:=540 - 160;
-  s[4,6].width:=80;
-  s[4,6].height:=20;
-// [4]t B
-  s[4,1].x:= 140 + 640;
-  s[4,1].y:=440 -160;
-  s[4,1].width:=20;
-  s[4,1].height:=100;
-// [4]t C
-  
-  s[4,2].x:= 140 + 640;
-  s[4,2].y:=560 - 160;
-  s[4,2].width:=20;
-  s[4,2].height:=100;
-//I[4] E
-  s[4,4].x:= 40 + 640;
-  s[4,4].y:=560 -160;
-  s[4,4].width:=20;
-  s[4,4].height:=100;
-//I[4] F
-  s[4,5].x:= 40 + 640;
-  s[4,5].y:=440 -160;
-  s[4,5].width:=20;
-  s[4,5].height:=100;
-// It A
-  s[5,0].x:=60 + 800;
-  s[5,0].y:=pixel*cont div 2 - 140;
-  s[5,0].width:=80;
-  s[5,0].height:=20;
-// [5]t D        
-  s[5,3].x:=60 + 800;
-  s[5,3].y:=660 - 160;
-  s[5,3].width:=80;
-  s[5,3].height:=20;
-// [5]t G
-  s[5,6].x:=60 + 800;
-  s[5,6].y:=540 - 160;
-  s[5,6].width:=80;
-  s[5,6].height:=20;
-// [5]t B
-  s[5,1].x:= 140 + 800;
-  s[5,1].y:=440 -160;
-  s[5,1].width:=20;
-  s[5,1].height:=100;
-// [5]t C
-  
-  s[5,2].x:= 140 + 800;
-  s[5,2].y:=560 - 160;
-  s[5,2].width:=20;
-  s[5,2].height:=100;
-//I[5] E
-  s[5,4].x:= 40 + 800;
-  s[5,4].y:=560 -160;
-  s[5,4].width:=20;
-  s[5,4].height:=100;
-//I[5] F
-  s[5,5].x:= 40 + 800;
-  s[5,5].y:=440 -160;
-  s[5,5].width:=20;
-  s[5,5].height:=100;
+  s.y:= (alto div 2) - (segH / 2) -  (segV + segH);
+  s.x:= ancho/2 -((segH*2)*4+(segV*4)) - segH/2;
+  ay:= s.y;
+  for j:= 0 to 5 do begin
+    ax:= s.x;
+  for i:= 0 to 6 do begin
+    if(i = 0) or (i = 3) or (i = 6)then begin
+      s.width:= segV;
+      s.height:= segH;
+      end
+    else begin
+      s.width:= segH;
+      s.height:= segV;
+    end;
+    if i < 1 then
+      s.x:= s.x + segH;
+    if i = 1 then begin
+      s.x:= s.x + segV;
+      s.y:= s.y + segH;
+    end;
+    if i = 2 then
+      s.y:= s.y + segH + segV;
+    if i = 3 then begin
+      s.x:=s.x - segV;
+      s.y:= s.y + segV;
+    end;
+    if i = 4 then begin
+      s.y:= s.y  - segV;
+      s.x:= ax;
+    end;
+    if i = 5 then
+      s.y:= s.y - segv -segH;
+    if i = 6 then begin
+      s.x := s.x + segH;
+      s.y:= s.y + segV
+    end;
+    s2[j,i].x:= s.x;
+    s2[j,i].y:= s.y;
+    s2[j,i].height:= s.height;
+    s2[j,i].width:= s.width;
+  end;
+  s.y:= ay;
+  if(j = 1) or (j = 3)then
+    s.x:= s.x +segV*2 + segH*2
+  else
+  s.x := s.x + segV + segH*2;
+end;
 end;
 
 
@@ -292,26 +129,26 @@ begin
   exp:= 6;
   acu:= 0;
   for i:= 0 to 9 do
-    begin
+  begin
     for j:= 0 to 6 do
+    begin
+      pot:= potencia(exp);
+      if acu + pot <= nums[i] then
       begin
-        pot:= potencia(exp);
-       if acu + pot <= nums[i] then
-         begin
-           vf[i,j]:= true;
-         acu:= acu + pot;
-         exp:= exp - 1;
-       end
-       else
-         begin
-           vf[i,j]:= false;
-           exp:= exp - 1
-         end;
+        vf[i,j]:= true;
+        acu:= acu + pot;
+        exp:= exp - 1;
+      end
+      else
+      begin
+        vf[i,j]:= false;
+        exp:= exp - 1
       end;
-      exp:= 6;
-      acu:= 0
-
     end;
+    exp:= 6;
+    acu:= 0
+
+  end;
 end;
 procedure init_cn(var cn:cronos); // Iniciamos el cronometro en 10 min, esta dispuesto como un array de 0..5
 var
@@ -333,48 +170,48 @@ var
 begin
   
   pos:= 5;
-if cn[pos] = 0 then
+  if cn[pos] = 0 then
   begin
-   //cn[pos]:= 9;
+    //cn[pos]:= 9;
     for i:= pos-1 downto 0 do //Buscando el digito mas proximo mayor a cero
+begin
+  if cn[i] > 0 then //Encuentro el digito mas proximo.
+begin
+
+  if cn[i] = 1 then
+  begin
+    cn[i]:=cn[i] - 1;
+    if i + 1 <> pos then
+    begin
+      for j:= i +1 to pos do
       begin
-      if cn[i] > 0 then //Encuentro el digito mas proximo.
-        begin
-          
-          if cn[i] = 1 then
-            begin
-              cn[i]:=cn[i] - 1;
-              if i + 1 <> pos then
-                begin
-                for j:= i +1 to pos do
-                  begin
-                    //writeln(j);
-                    if j mod 2 = 0 then
-                      cn[j]:= 5
-                    else
-                      cn[j]:= 9;
-                  end;
-                end
-                else
-                  break;
-              end
-          else
-            begin
-            cn[i]:= cn[i] - 1;
-            if cn[i + 1] = 0 then
-              begin
-                if ((i + 1) mod 2 = 0) then
-                  cn[i + 1]:= 5
-                else
-                  cn[i + 1]:= 9
-              end;
-            break
-          end;
-        end;
-        end;
+        //writeln(j);
+        if j mod 2 = 0 then
+          cn[j]:= 5
+        else
+          cn[j]:= 9;
+      end;
+    end
+    else
+      break;
+    end
+    else
+    begin
+      cn[i]:= cn[i] - 1;
+      if cn[i + 1] = 0 then
+      begin
+        if ((i + 1) mod 2 = 0) then
+          cn[i + 1]:= 5
+        else
+          cn[i + 1]:= 9
+      end;
+      break
+    end;
+  end;
+end;
   end
-else
-  cn[pos]:= cn[pos] - 1;
+  else
+    cn[pos]:= cn[pos] - 1;
 
 end;
 function digito(cn:cronos;pos:integer):integer;
@@ -417,7 +254,7 @@ var
   naranja:TColorB;
   cron:cronos;
   vf:OnOff;
-  seg:real;
+  seg:longint;
   io: boolean;
 begin
   naranja.r:=250;
@@ -430,16 +267,17 @@ begin
   SetTargetFps(60);
   seg:=1;
   io:= true;
-  InitWindow(pixel*cont + 200,pixel * cont,'Segmentos');
+  InitWindow(ancho,alto,'Segmentos');
 
   while not WindowShouldClose() do
     begin
-      seg:= seg + GetFrameTime();
+      seg:= seg + 1;
       BeginDrawing();
-      if seg >= 1 then
+      ClearBackground(black);
+      colorear(cron,s,naranja,vf);
+      if seg = 60 then
         begin
         corre(cron);
-        colorear(cron,s,naranja,vf);
         if io then
           begin
             init_c(naranja);
@@ -447,10 +285,10 @@ begin
           end
           else
             begin
-             init_c(ColorContrast(black, -0.09));
+              init_c(ColorContrast(black, -0.09));
               io:= true;
             end;
-        seg:= 0.0;
+        seg:= 0;
       end;
       EndDrawing();
     end;
