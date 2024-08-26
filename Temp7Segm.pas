@@ -10,7 +10,7 @@ rgba(250, 107, 63, 0.38)
 program s7;
 
 uses
-  raylib;
+  raylib,dos,SysUtils;
 
 const
   alto = 200;
@@ -18,7 +18,7 @@ const
   segV = ancho*0.06;
   segH = alto*0.026;
   nums: array[0..9] of integer =
-  (126,6,109,121,51,91,95,112,127,123);
+  (126,48,109,121,51,91,95,112,127,123);
   cx: array [0..1] of integer = (340,660);
   cy: array[0..1] of integer = (413,368);
   
@@ -29,7 +29,7 @@ const
   }
 {
 0 = 1111110
-1 = 0000110
+1 = 0110000
 2 = 1101101
 3 = 1111001
 4 = 0110011
@@ -150,70 +150,63 @@ begin
 
   end;
 end;
-procedure init_cn(var cn:cronos); // Iniciamos el cronometro en 10 min, esta dispuesto como un array de 0..5
 var
-  i:integer;
-begin
-  for i:= 0 to 5 do
-    begin
-      if i = 2 then
-        cn[i]:= 1
-      else
-        cn[i]:= 0;
-    end;
-end;
-
-procedure corre(var cn:cronos);
-var
-  i,j,pos:integer;
+  aux:integer;
+  wh,wm,ws,wms:word;
+procedure corre(var cn:cronos;var s,aoa:longint);
  
+var
+  h,m,ps:integer;
 begin
-  
-  pos:= 5;
-  if cn[pos] = 0 then
-  begin
-    //cn[pos]:= 9;
-    for i:= pos-1 downto 0 do //Buscando el digito mas proximo mayor a cero
-begin
-  if cn[i] > 0 then //Encuentro el digito mas proximo.
-begin
+    h:= s div 3600;
+    m:= s mod 3600 div 60;
+    ps:=s mod 3600 mod 60;
+    cn[0]:= h div 10;
+    cn[1]:= h mod 10;
+    cn[2]:= m div 10;
+    cn[3]:= m mod 10;
+    cn[4]:= ps div 10;
+    cn[5]:= ps mod 10;
+end;
 
-  if cn[i] = 1 then
-  begin
-    cn[i]:=cn[i] - 1;
-    if i + 1 <> pos then
-    begin
-      for j:= i +1 to pos do
-      begin
-        //writeln(j);
-        if j mod 2 = 0 then
-          cn[j]:= 5
-        else
-          cn[j]:= 9;
-      end;
-    end
-    else
-      break;
-    end
-    else
-    begin
-      cn[i]:= cn[i] - 1;
-      if cn[i + 1] = 0 then
-      begin
-        if ((i + 1) mod 2 = 0) then
-          cn[i + 1]:= 5
-        else
-          cn[i + 1]:= 9
-      end;
-      break
-    end;
+procedure current_t(var cn:cronos);
+begin
+  DecodeTime(Time,wh,wm,ws,wms);
+  cn[0]:= wh div 10;
+  cn[1]:= wh mod 10;
+  cn[2]:= wm div 10;
+  cn[3]:= wm mod 10;
+  cn[4]:= ws div 10;
+  cn[5]:= ws mod 10;
+
+end;
+
+procedure ctr(var cn:cronos;var s:longint;var aoa:integer;var seg:longint);
+begin
+  if IsKeyPressed(KEY_SPACE)then
+    aux:= KEY_SPACE;
+  if aux = KEY_SPACE then
+    seg:= seg + 1;
+  if(aoa = KEY_C) then begin
+    if seg = 60 then begin
+      s:= s + 1;  
+      seg:= 0;
   end;
+    corre(cn,s,aoa);
+  end;
+  if aoa = KEY_H then 
+    current_t(cn);
+  if IsKeyPressed(KEY_H) then begin
+    aoa:= KEY_H;
+    aux:= 0;
+  end;
+  if IsKeyPressed(KEY_C)then begin
+    s:= 0;
+    aoa:= KEY_C;
+  end;
+      
 end;
-  end
-  else
-    cn[pos]:= cn[pos] - 1;
 
-end;
 function digito(cn:cronos;pos:integer):integer;
 begin
   digito:= cn[pos];
@@ -254,30 +247,32 @@ var
   naranja:TColorB;
   cron:cronos;
   vf:OnOff;
-  seg:longint;
+  seg,ss:longint;
   io: boolean;
+  aoa:integer;
 begin
   naranja.r:=250;
   naranja.g:=0;
   naranja.b:=0;
   naranja.a:=255;
+  ss:= 0;
   init_s(s);
   bb(vf);
-  init_cn(cron);
   SetTargetFps(60);
-  seg:=1;
+  seg:=0;
+  aoa:= KEY_C;
+  corre(cron,ss,aoa);
   io:= true;
   InitWindow(ancho,alto,'Segmentos');
 
   while not WindowShouldClose() do
     begin
-      seg:= seg + 1;
       BeginDrawing();
-      ClearBackground(black);
+      ClearBackground(GetColor($181818));
       colorear(cron,s,naranja,vf);
+      ctr(cron,ss,aoa,seg);
       if seg = 60 then
         begin
-        corre(cron);
         if io then
           begin
             init_c(naranja);
