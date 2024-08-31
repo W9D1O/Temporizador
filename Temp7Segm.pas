@@ -13,8 +13,8 @@ uses
   raylib,dos,SysUtils;
 
 const
-  alto = 200;
-  ancho = 400;
+  alto = 600;
+  ancho = 800;
   segV = ancho*0.06;
   segH = alto*0.026;
   nums: array[0..9] of integer =
@@ -53,7 +53,7 @@ var
   ax,ay:real;
 begin
   s.y:= (alto div 2) - (segH / 2) -  (segV + segH);
-  s.x:= ancho/2 -((segH*2)*4+(segV*4)) - segH/2;
+  s.x:= ancho/2 -((segH*2)*5.5+(segV*4)) - segH/2;
   ay:= s.y;
   for j:= 0 to 5 do begin
     ax:= s.x;
@@ -97,7 +97,7 @@ begin
   if(j = 1) or (j = 3)then
     s.x:= s.x +segV*2 + segH*2
   else
-  s.x := s.x + segV + segH*2;
+  s.x := s.x + segV + segH*4;
 end;
 end;
 
@@ -153,6 +153,15 @@ end;
 var
   aux:integer;
   wh,wm,ws,wms:word;
+
+procedure temp(var s,aoa:longint);
+begin
+  if ParamCount > 0 then begin
+    s:= StrToInt(ParamStr(1));
+    aoa:= KEY_T;
+  end;
+end;
+
 procedure corre(var cn:cronos;var s,aoa:longint);
  
 var
@@ -193,6 +202,13 @@ begin
       seg:= 0;
   end;
     corre(cn,s,aoa);
+  end;
+  if aoa = KEY_T then begin
+    if seg = 60 then begin
+      s:= s - 1;
+      seg:= 0;
+    end;
+    corre(cn,s,aoa)
   end;
   if aoa = KEY_H then 
     current_t(cn);
@@ -237,14 +253,14 @@ begin
         if vf[dig,j] then
           auxc:=naranja
         else
-          auxc:=ColorContrast(black, -0.09);
+          auxc:=ColorContrast(GetColor($181818), -0.7);
 
       DrawRectangleRounded(s[i,j],0.9,6,auxc);
     end;
 end;
 var
   s:Aseg;
-  naranja:TColorB;
+  naranja,n2:TColorB;
   cron:cronos;
   vf:OnOff;
   seg,ss:longint;
@@ -255,6 +271,7 @@ begin
   naranja.g:=0;
   naranja.b:=0;
   naranja.a:=255;
+  n2:= naranja;
   ss:= 0;
   init_s(s);
   bb(vf);
@@ -262,6 +279,7 @@ begin
   seg:=0;
   aoa:= KEY_C;
   corre(cron,ss,aoa);
+  temp(ss,aoa);
   io:= true;
   InitWindow(ancho,alto,'Segmentos');
 
@@ -271,19 +289,19 @@ begin
       ClearBackground(GetColor($181818));
       colorear(cron,s,naranja,vf);
       ctr(cron,ss,aoa,seg);
-      if seg = 60 then
+      //init_c(n2);
+      if seg >= 59 then
         begin
         if io then
           begin
-            init_c(naranja);
+            n2:= naranja;
             io:= false
           end
           else
             begin
-              init_c(ColorContrast(black, -0.09));
+              n2 := ColorContrast(GetColor($181818), -0.7);
               io:= true;
             end;
-        seg:= 0;
       end;
       EndDrawing();
     end;
