@@ -10,17 +10,16 @@ rgba(250, 107, 63, 0.38)
 program s7;
 
 uses
-  raylib,dos,SysUtils;
+  raylib,SysUtils;
 
 const
   alto = 600;
   ancho = 800;
   segV = ancho*0.06;
   segH = alto*0.026;
+  r = ancho*0.01;
   nums: array[0..9] of integer =
   (126,48,109,121,51,91,95,112,127,123);
-  cx: array [0..1] of integer = (340,660);
-  cy: array[0..1] of integer = (413,368);
   
   {0 = x = 340, y = 413
   1 = x 340, y = 368;
@@ -45,6 +44,12 @@ type
   cronos =array[0..5] of integer;
   Aseg = array[0..5,0..6] of TRectangle;
 
+//#####################//
+var
+  aux:integer;
+  pausa:boolean=false;
+  wh,wm,ws,wms:word;
+//####################//
 
 procedure init_s(var s2:Aseg);
 var
@@ -150,9 +155,6 @@ begin
 
   end;
 end;
-var
-  aux:integer;
-  wh,wm,ws,wms:word;
 
 procedure temp(var s,aoa:longint);
 begin
@@ -189,12 +191,19 @@ begin
   cn[5]:= ws mod 10;
 
 end;
+function pause(aux:integer;pausa:boolean):boolean;
+begin
+  if (aux = KEY_SPACE) and (IsKeyPressed(KEY_SPACE)) THEN
+  pausa:= not pausa;
 
+  pause:= pausa;
+end;
 procedure ctr(var cn:cronos;var s:longint;var aoa:integer;var seg:longint);
 begin
+  pausa:=pause(aux,pausa);
   if IsKeyPressed(KEY_SPACE)then
     aux:= KEY_SPACE;
-  if aux = KEY_SPACE then
+  if (aux = KEY_SPACE) and (not pausa) then
     seg:= seg + 1;
   if(aoa = KEY_C) then begin
     if seg = 60 then begin
@@ -229,16 +238,27 @@ begin
 end;
 
 
-procedure init_c(naranja:TColorB);
+procedure init_c(naranja:TColorB;s:Aseg);
 
 var
-  i,j:integer;
+  i:integer;
+  pun:TVector2;
 begin
-  for i:= 0 to 1 do
-    begin
-      for j:= 0 to 1 do
-        DrawCircle(cx[i], cy[j], 11.5, naranja)
-end;
+  pun.y:= (s[1,6].y - s[1,6].width /2);
+  for i:= 0 to 3 do begin
+    if i < 2 then
+        pun.x:= s[2,6].x + (s[1,1].x - s[2,6].x) / 2
+      else
+        if (i = 2) then
+        pun.x:= pun.x * 2;
+
+      if i mod 2 = 0 then
+        pun.y:= (s[1,6].y - s[1,6].width /2)
+      else
+        pun.y:= (s[1,3].y - s[1,3].width /2);
+        writeln(pun.y:2:2,' ',pun.x:2:2,' ',i);
+        DrawCircle(trunc(pun.x),trunc(pun.y), r, naranja);
+      end;
 end;
 
 procedure colorear(cn:cronos;s:Aseg;naranja:TColorB;vf:OnOff);
@@ -289,7 +309,9 @@ begin
       ClearBackground(GetColor($181818));
       colorear(cron,s,naranja,vf);
       ctr(cron,ss,aoa,seg);
-      //init_c(n2);
+      init_c(n2,s);
+      DecodeTime(Time,wh,wm,ws,wms);
+      //writeln(ws);
       if seg >= 59 then
         begin
         if io then
